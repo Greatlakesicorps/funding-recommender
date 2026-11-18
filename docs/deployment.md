@@ -2,7 +2,7 @@
 
 [Overview](../README.md) · [Handoff](handoff.md) · [Testing](testing.md)
 
-The company Cloudflare account hosts the static Vite site and chat API in one Worker. The intended URL is `https://funding-explorer.fancy-violet-d5d3.workers.dev`. Verify it and the full sign-in/chat flow before sharing it as a working release.
+The company Cloudflare account hosts the static Vite site and chat API in one Worker. The intended URL is `https://funding-explorer.greatlakesicorps.workers.dev`. Verify it and the full sign-in/chat flow before sharing it as a working release.
 
 ## Neon Auth and Google
 
