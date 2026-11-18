@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { after, before, test } from "node:test";
@@ -41,7 +41,7 @@ before(async () => {
     JSON.stringify({
       name: "funding-chat-tests",
       main: join(root, "tests", "fixtures", "chat-worker.ts"),
-      tsconfig: join(root, "worker", "tsconfig.json"),
+      tsconfig: relative(temporary, join(root, "worker", "tsconfig.json")),
       compatibility_date: "2026-05-15",
       compatibility_flags: ["nodejs_compat"],
     }),

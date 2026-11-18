@@ -31,7 +31,7 @@ The first returns `{"ok":true}`; the second returns 401 without calling Maizey.
 
 ## Browser checks
 
-Use public or fictional input. Real chat tests may consume Maizey quota. Run against the release origin (the Pages URL), using a separate profile for clean-session checks. Also try Safari or a browser with third-party cookies blocked: the site and Neon Auth are different origins.
+Use public or fictional input. Real chat tests may consume Maizey quota. Run against the release site origin, using a separate profile for clean-session checks. Also try Safari or a browser with third-party cookies blocked: the site and Neon Auth are different origins.
 
 - [ ] Signed-out `/` shows the sign-in screen; direct unsigned `/api/chat` returns 401 without upstream calls.
 - [ ] Google returns to the app. Cancellation/browser Back leaves an enabled sign-in button and usable retry behavior.

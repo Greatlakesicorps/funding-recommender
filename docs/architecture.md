@@ -6,7 +6,7 @@
 
 ```mermaid
 sequenceDiagram
-    participant B as Browser (GitHub Pages)
+    participant B as Browser (Cloudflare static assets)
     participant N as Neon Auth
     participant W as Cloudflare Worker
     participant D as Rate limiter
@@ -39,9 +39,9 @@ Invalid requests, missing or invalid tokens, and failed limiter checks stop befo
 | `src/globals.css`                                          | All styling.                                                                                   |
 | `worker/index.ts`                                          | Chat API: CORS, token verification, validation, rate limiting, signed conversation, Maizey.    |
 | `worker/funding-rate-limiter.ts`                           | Atomic SQLite-backed fixed-window limiter and alarm cleanup.                                   |
-| `wrangler.jsonc`                                           | Worker name, variables, Durable Object binding and migration history.                          |
-| `vite.config.ts`, `index.html`                             | Site build. `VITE_BASE` sets the Pages sub-path.                                               |
-| `.github/workflows/pages.yml`                              | Checks, builds and publishes the site to GitHub Pages.                                         |
+| `wrangler.jsonc`                                           | Worker name, static assets, variables, Durable Object binding and migration history.           |
+| `vite.config.ts`, `index.html`                             | Site build. `VITE_BASE` sets the deployment sub-path.                                          |
+| `.github/workflows/ci.yml`                                 | Checks and builds the site; does not deploy.                                                   |
 | `tests/`                                                   | Unit tests and a Miniflare integration test of the real Worker; `fixtures/` holds the wrapper. |
 
 There is no application database. Neon manages its own auth records; saved searches stay in the browser.

@@ -2,65 +2,48 @@
 
 [Overview](../README.md) · [Handoff](handoff.md) · [Testing](testing.md)
 
-The site (GitHub Pages) and the chat API (Cloudflare Worker) deploy separately. Deploy the Worker first so the site has an API to call.
+The company Cloudflare account hosts the static Vite site and chat API in one Worker. The intended URL is `https://funding-explorer.fancy-violet-d5d3.workers.dev`. Verify it and the full sign-in/chat flow before sharing it as a working release.
 
-## 1. Neon Auth and Google
+## Neon Auth and Google
 
-1. Confirm the intended Neon Auth project/branch and its Auth URL (the same value goes in `NEON_AUTH_BASE_URL` in `wrangler.jsonc` and in the `VITE_NEON_AUTH_URL` repository variable).
-2. Add the Pages **origin** to Neon trusted domains: `https://<owner>.github.io` (no path). Add `http://localhost:5173` for local work.
-3. Configure team-owned Google OAuth credentials for production. The shared Neon Google provider is for development. Add the Pages origin to the Google app's authorized origins and use the callback URL Neon supplies.
-4. Test sign-in and sign-out on the real Pages URL.
+1. Confirm the Neon Auth project/branch and its Auth URL. The same value is used by `NEON_AUTH_BASE_URL` in `wrangler.jsonc` and `VITE_NEON_AUTH_URL` when building the site.
+2. Add the exact site origin to the branch's Neon trusted domains. Add local development origins as needed.
+3. Configure team-owned Google OAuth credentials for production. The shared Neon Google provider is for development. Use the callback URL Neon supplies and its production setup guidance.
+4. Test Google sign-in and sign-out on the real site. Google sign-in does not enforce university membership.
 
-Google sign-in does not enforce university membership. Add a rule in `worker/index.ts` if that is required. Apple and SSO are future work.
+The site and Neon Auth have different origins, so third-party-cookie blocking can prevent sign-in. Test Safari and a private window before launch.
 
-The site signs in through Neon from a different origin than Neon's auth host, so browsers that block third-party cookies (notably Safari) may fail to keep the session. Test Safari and a private window before launch; a custom domain shared by the site and Neon Auth would avoid this.
+## Build and deploy
 
-## 2. Cloudflare Worker
-
-Settings:
-
-- `ALLOWED_ORIGINS` and `NEON_AUTH_BASE_URL` are plain variables in `wrangler.jsonc`. Set `ALLOWED_ORIGINS` to the Pages origin (no path or trailing slash needed) plus any others, e.g. `https://greatlakesicorps.github.io,http://localhost:5173`.
-- `MAIZEY_API_TOKEN` is a secret. Never put it in `wrangler.jsonc`.
-
-Authenticate to the intended account, set the secret, then deploy:
+Confirm `npx wrangler whoami` is the intended account. `wrangler.jsonc` explicitly targets the company account and serves `dist/` while routing `/api/*` to the Worker. Set the private `MAIZEY_API_TOKEN` using the provider's secure secret input; never put it in source, a `VITE_*` variable, or a command argument:
 
 ```sh
-npx wrangler login
-npx wrangler whoami
 npx wrangler secret put MAIZEY_API_TOKEN
+```
+
+Set `VITE_NEON_AUTH_URL` to the public Auth URL from `wrangler.jsonc`. Build for the site root with an empty `VITE_API_URL` so requests use the same origin. On PowerShell:
+
+```powershell
+$env:VITE_BASE = "/"
+$env:VITE_API_URL = ""
+$env:VITE_NEON_AUTH_URL = "<Neon Auth URL>"
+npm run build
 npm run worker:deploy
 ```
 
-Wrangler prints the Worker URL (for example `https://funding-explorer.<account>.workers.dev`). Check `GET <url>/api/health` returns `{"ok":true}`.
-
-Keep the `FUNDING_RATE_LIMITER` binding, the `FundingRateLimiter` export, and the `funding-rate-limit-v1` migration tag when updating an existing Worker. Moving accounts or Worker names creates separate storage. Do not rename bindings or migrations to clear usage.
-
-See Cloudflare's [Worker secrets](https://developers.cloudflare.com/workers/configuration/secrets/) and [Wrangler configuration](https://developers.cloudflare.com/workers/wrangler/configuration/) references.
-
-## 3. GitHub Pages
-
-1. In the repository, open **Settings → Pages** and set **Source** to **GitHub Actions**. Pages on a private repository requires a paid GitHub plan.
-2. Under **Settings → Secrets and variables → Actions → Variables**, add:
-   - `VITE_API_URL`: the Worker URL from step 2 (no trailing slash).
-   - `VITE_NEON_AUTH_URL`: the Neon Auth URL.
-3. Push to `main` (or run the **Deploy site to GitHub Pages** workflow). It runs `npm run check`, builds with `VITE_BASE=/<repository-name>/`, and publishes `dist/`.
-
-These variables are public; they end up in the site's JavaScript. Do not store secrets in them.
-
-Local preview of the sub-path build:
+On macOS or Linux, set the same variables for the build:
 
 ```sh
-$env:VITE_BASE="/funding-recommender/"; npm run build; npm run preview
+VITE_BASE=/ VITE_API_URL='' VITE_NEON_AUTH_URL='<Neon Auth URL>' npm run build
+npm run worker:deploy
 ```
 
-## Verify a release
+Always rebuild before deploying: `wrangler deploy` uploads the existing `dist/`. Local `.env.local` values can otherwise cause the build to target a different API. The GitHub Actions workflow runs checks only; it does not deploy.
 
-Record the commit, Worker version ID, Pages URL, date, and operator. Perform the [browser checklist](testing.md#browser-checks) on the Pages URL. Confirm an unauthenticated `POST /api/chat` returns 401 and that Google returns to the exact Pages origin. Automated tests mock the provider.
+Keep the `FUNDING_RATE_LIMITER` binding, `FundingRateLimiter` export, and `funding-rate-limit-v1` migration tag. A different account or Worker name has separate limiter storage.
 
-## Recovery
+## Verify and recover
 
-- **Site:** re-run an earlier successful workflow, or revert the commit on `main`.
-- **Worker:** in Cloudflare, identify the last verified version in deployment history and roll back, or redeploy an earlier commit. A rollback does not undo secret rotation or provider settings. See Cloudflare's [rollback guide](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/).
-- **Incident:** restrict traffic through approved account controls (for example, remove the origin from `ALLOWED_ORIGINS` and redeploy, or rotate `MAIZEY_API_TOKEN`). Preserve migration history; deleting the Worker/storage is not a routine rollback.
+Check the site and `GET /api/health`, confirm an unauthenticated `POST /api/chat` returns 401, and complete the [browser checklist](testing.md#browser-checks), including real Google sign-in and an authenticated Maizey chat. Record the commit and Worker version. Automated tests mock the external providers.
 
-To reduce reachable URLs once an approved domain exists, set `"workers_dev": false` in `wrangler.jsonc` after the custom route works.
+For rollback, redeploy a previously verified commit or use Cloudflare's deployment history. A rollback does not undo secret rotation or provider settings. Preserve the Durable Object migration history.

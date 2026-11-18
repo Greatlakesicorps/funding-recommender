@@ -39,24 +39,24 @@ Delete the lines each file does not use. Never put secrets in `VITE_*` variables
 
 ## Sign-in setup
 
-Funding Explorer uses required Google sign-in through Neon Auth. In the intended Neon branch, enable the Google provider and add `http://localhost:5173` (and the Pages origin for production) to trusted domains. `localhost`, `127.0.0.1`, and different ports are distinct origins.
+Funding Explorer uses required Google sign-in through Neon Auth. In the intended Neon branch, enable the Google provider and add `http://localhost:5173` and the production site origin to trusted domains. `localhost`, `127.0.0.1`, and different ports are distinct origins.
 
 The existing development project uses Neon's shared Google credentials. Production needs team-owned OAuth credentials and approved origins; see [deployment](deployment.md#neon-auth-and-google). Apple and SSO are not configured.
 
 ## Commands
 
-| Command                 | Purpose                                                             |
-| ----------------------- | ------------------------------------------------------------------- |
-| `npm run dev`           | Vite dev server with HMR on port 5173.                              |
-| `npm run worker:dev`    | Worker locally on port 8787 with `.dev.vars` and a local limiter.   |
-| `npm run build`         | Typecheck and build the site into `dist/`. Does not deploy.         |
-| `npm run preview`       | Serve the built site locally.                                       |
-| `npm run worker:deploy` | Deploy the Worker with Wrangler. See [deployment](deployment.md).   |
-| `npm run format`        | Format source and docs. `format:check` verifies without rewriting.  |
-| `npm run typecheck`     | Check TypeScript for the site and the Worker.                       |
-| `npm run lint`          | Run ESLint.                                                         |
-| `npm test`              | Unit tests and the Worker integration test with mocked services.    |
-| `npm run check`         | Formatting, types, lint, tests, then build. Stops at first failure. |
+| Command                 | Purpose                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `npm run dev`           | Vite dev server with HMR on port 5173.                                                 |
+| `npm run worker:dev`    | Worker locally on port 8787 with `.dev.vars` and a local limiter; build `dist/` first. |
+| `npm run build`         | Typecheck and build the site into `dist/`. Does not deploy.                            |
+| `npm run preview`       | Serve the built site locally.                                                          |
+| `npm run worker:deploy` | Deploy the Worker with Wrangler. See [deployment](deployment.md).                      |
+| `npm run format`        | Format source and docs. `format:check` verifies without rewriting.                     |
+| `npm run typecheck`     | Check TypeScript for the site and the Worker.                                          |
+| `npm run lint`          | Run ESLint.                                                                            |
+| `npm test`              | Unit tests and the Worker integration test with mocked services.                       |
+| `npm run check`         | Formatting, types, lint, tests, then build. Stops at first failure.                    |
 
 To change the site port: `npm run dev -- --port 5174`, then add that origin to `ALLOWED_ORIGINS` and to Neon trusted domains.
 

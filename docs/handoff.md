@@ -6,14 +6,14 @@
 
 Source lives in the [Greatlakesicorps/funding-recommender](https://github.com/Greatlakesicorps/funding-recommender) repository. `Greatlakesicorps` is a GitHub user account, not an organization; teammates need individual collaborator invitations. Repository access does not grant access to the services below.
 
-| Service        | Current resource                                                                                   | Handoff action                                                                                                                                   |
-| -------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GitHub         | Private repository `Greatlakesicorps/funding-recommender`; GitHub Pages hosts the site             | Grant individual manager access; assign branch/review administration and Pages settings.                                                         |
-| Cloudflare     | Personal test Worker `funding-explorer`, `funding-explorer.jaleeldrones1.workers.dev` (chat API)   | Choose approved account/domain and assign deployment, logs, secrets, billing, and recovery access. Verify how to transfer or recreate resources. |
-| Neon Auth      | Personal project `funding-explorer` (`square-bonus-21290837`), main branch `br-tiny-leaf-bemdx3df` | Assign project/organization administration and billing. Confirm the Auth URL, Google provider, trusted origins, and account recovery.            |
-| Google OAuth   | Shared Neon development provider                                                                   | Configure a team-owned production application, administrators, support contact, and correct Neon callbacks/app origins.                          |
-| U-M Maizey     | Project `98ae38ad-ee38-4ddb-a92e-24c5f3cff364`                                                     | Assign project/content administration, token rotation, quotas/billing monitoring, and support; confirm permitted external use.                   |
-| Domain/support | No approved production arrangement recorded                                                        | Assign DNS, privacy approval, support contact, incident response, and ongoing ownership.                                                         |
+| Service        | Current resource                                                                                   | Handoff action                                                                                                                        |
+| -------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub         | Public repository `Greatlakesicorps/funding-recommender`                                           | Grant individual manager access; assign branch and review administration.                                                             |
+| Cloudflare     | Company Worker `funding-explorer`; personal Workers remain separate                                | Verify the new site and chat; assign deployment, logs, secrets, billing, and recovery access.                                         |
+| Neon Auth      | Personal project `funding-explorer` (`square-bonus-21290837`), main branch `br-tiny-leaf-bemdx3df` | Assign project/organization administration and billing. Confirm the Auth URL, Google provider, trusted origins, and account recovery. |
+| Google OAuth   | Shared Neon development provider                                                                   | Configure a team-owned production application, administrators, support contact, and correct Neon callbacks/app origins.               |
+| U-M Maizey     | Project `98ae38ad-ee38-4ddb-a92e-24c5f3cff364`                                                     | Assign project/content administration, token rotation, quotas/billing monitoring, and support; confirm permitted external use.        |
+| Domain/support | No approved production arrangement recorded                                                        | Assign DNS, privacy approval, support contact, incident response, and ongoing ownership.                                              |
 
 Resource IDs are references, not credentials. Confirm current account details with the responsible owner. Update this record when transfers actually happen.
 
@@ -26,9 +26,9 @@ Resource IDs are references, not credentials. Confirm current account details wi
 - [ ] Review token exposure history. An earlier `.env.example` reportedly held a real Maizey token; rotate it (`wrangler secret put MAIZEY_API_TOKEN` after rotating in Maizey) if that file was shared. The current template contains placeholders only.
 - [ ] Configure production Google OAuth and exact origins. Apple and SSO are not implemented.
 - [ ] Confirm Maizey data sources, update cadence, retention/deletion, permissions, quotas, and spending alerts.
-- [ ] Enable Pages (Source: GitHub Actions) and set the `VITE_API_URL` / `VITE_NEON_AUTH_URL` repository variables.
+- [ ] Configure the company Worker's Maizey secret and verify the site, sign-in, and chat.
 - [ ] Complete setup and validation from a clean environment on the incoming maintainer's machine.
-- [ ] Record the verified commit, Worker version, and Pages URL after each launch deployment.
+- [ ] Record the verified commit, Worker version, and site URL after each launch deployment.
 - [ ] Complete ITS/privacy/hosting/billing approvals and assign support before public launch.
 - [ ] After verifying the replacement, decide who retires the personal test deployment and removes obsolete access.
 
@@ -53,4 +53,4 @@ This workspace was nested inside an unrelated Git repository. Check `git rev-par
 
 ## Acceptance exercise
 
-Have the incoming maintainer follow [development](development.md), run `npm run check`, and complete [browser checks](testing.md#browser-checks). They should identify the active Maizey project, update guidance, deploy the Worker and the Pages site, find deployment history, and explain data storage. Record the accepting maintainer, date, repository URL, verified deployed version, and remaining launch work after completion.
+Have the incoming maintainer follow [development](development.md), run `npm run check`, and complete [browser checks](testing.md#browser-checks). They should identify the active Maizey project, update guidance, deploy the Worker and site, find deployment history, and explain data storage. Record the accepting maintainer, date, repository URL, verified deployed version, and remaining launch work after completion.

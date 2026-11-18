@@ -8,8 +8,8 @@ Great Lakes I-Corps Hub prototype for exploring follow-on funding and support. V
 
 | Part     | Where             | What it does                                                                          |
 | -------- | ----------------- | ------------------------------------------------------------------------------------- |
-| Site     | GitHub Pages      | Static Vite + React app. Google sign-in through Neon Auth. Search history in browser. |
-| Chat API | Cloudflare Worker | `POST /api/chat`: verifies the sign-in token, rate-limits per user, calls Maizey.     |
+| Site     | Cloudflare Worker | Static Vite + React app. Google sign-in through Neon Auth. Search history in browser. |
+| Chat API | Same Worker       | `POST /api/chat`: verifies the sign-in token, rate-limits per user, calls Maizey.     |
 | Identity | Neon Auth         | Google sign-in and the signed token the Worker verifies.                              |
 
 The Maizey token never reaches the browser; it lives only in the Worker.
@@ -20,7 +20,7 @@ The Maizey token never reaches the browser; it lives only in the Worker.
 | ------------------------------------------- | ------------------------------------ |
 | Install, configure, run locally             | [Development](docs/development.md)   |
 | Understand the request flow and code layout | [Architecture](docs/architecture.md) |
-| Deploy the Worker and the Pages site        | [Deployment](docs/deployment.md)     |
+| Deploy the Worker and site                  | [Deployment](docs/deployment.md)     |
 | Check sign-in and try prompts for schools   | [Testing](docs/testing.md)           |
 | Transfer accounts and responsibilities      | [Manager handoff](docs/handoff.md)   |
 
