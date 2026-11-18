@@ -8,7 +8,7 @@ The user chose **GitHub code + Cloudflare app**, with **Greatlakesicorps** as so
 
 | Service        | Current resource                                                                                   | Handoff action                                                                                                                                   |
 | -------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GitHub         | Private repository `Greatlakesicorps/funding-recommender`                                           | Publish the source, grant individual manager access, and assign branch/review administration.                                                    |
+| GitHub         | Private repository `Greatlakesicorps/funding-recommender`; source published to `main`                 | Grant individual manager access and assign branch/review administration.                                                                        |
 | Cloudflare     | Personal test Worker `funding-explorer`, `funding-explorer.jaleeldrones1.workers.dev`              | Choose approved account/domain and assign deployment, logs, secrets, billing, and recovery access. Verify how to transfer or recreate resources. |
 | Neon Auth      | Personal project `funding-explorer` (`square-bonus-21290837`), main branch `br-tiny-leaf-bemdx3df` | Assign project/organization administration and billing. Confirm the Auth URL, Google provider, trusted origins, and account recovery.            |
 | Google OAuth   | Shared Neon development provider                                                                   | Configure a team-owned production application, administrators, support contact, and correct Neon callbacks/app origins.                          |
@@ -19,7 +19,7 @@ Resource IDs are references, not credentials. Confirm current account details wi
 
 ## Transfer checklist
 
-- [ ] Put source under the confirmed GitHub owner and record the repository URL in `README.md`.
+- [x] Put source under the confirmed GitHub owner and record the repository URL in `README.md`.
 - [ ] Grant individual access; verify the manager can clone and administer resources without the original developer's browser session.
 - [ ] Transfer or recreate Cloudflare/Neon resources in approved accounts with billing/recovery contacts.
 - [ ] Deliver credentials through an approved secret manager. Keep `.env.local` out of Git and archives.
