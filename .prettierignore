@@ -1,0 +1,29 @@
+# Local data, credentials and generated output
+node_modules/
+dist/
+.next/
+.vinext/
+.wrangler/
+.sites-runtime/
+outputs/
+work/
+.env*
+.dev.vars*
+.neon
+*.tsbuildinfo
+next-env.d.ts
+package-lock.json
+coverage/
+# Retained starter tooling and third-party source
+scripts/
+vendor/
+components/ui/
+components/connector-error.tsx
+hooks/use-mobile.ts
+lib/connector*
+lib/connectors.ts
+app/chatgpt-auth.ts
+db/
+drizzle/
+examples/
+.openai/
