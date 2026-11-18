@@ -8,7 +8,7 @@ import {
   isFundingSourceList,
   normalizeSources,
   parseHistory,
-} from "../lib/funding-chat.ts";
+} from "../src/lib/funding-chat.ts";
 
 test("parseHistory accepts valid turns and rejects malformed input", () => {
   assert.deepEqual(parseHistory(undefined), []);

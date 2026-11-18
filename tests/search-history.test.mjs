@@ -31,7 +31,7 @@ const {
   titleFor,
   touchSearch,
   transcriptMarkdown,
-} = await import("../lib/search-history.ts");
+} = await import("../src/lib/search-history.ts");
 
 const DAY = 24 * 60 * 60 * 1000;
 const NOW = Date.UTC(2026, 10, 11, 17, 0, 0);

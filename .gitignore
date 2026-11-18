@@ -9,12 +9,8 @@
 !/.yarn/releases/
 !/.yarn/versions/
 
-# Generated builds and framework state
+# Generated builds
 /dist/
-/.next/
-/.vinext/
-/out/
-next-env.d.ts
 *.tsbuildinfo
 
 # Test output
@@ -34,7 +30,6 @@ yarn-error.log*
 
 # Checkout-local tool state
 /.wrangler/
-/.sites-runtime/
 
 # Workspace scaffolding and publication archives
 /.agents/

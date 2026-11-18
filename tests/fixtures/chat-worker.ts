@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { POST } from "../../app/api/chat/route";
+import worker, { type Env } from "../../worker/index";
 import { FundingRateLimiter } from "../../worker/funding-rate-limiter";
 
 export { FundingRateLimiter };
@@ -31,19 +31,15 @@ export class BrokenRateLimiter extends DurableObject {
   }
 }
 
-interface TestEnv {
+interface TestEnv extends Env {
   TEST_LIMITER: DurableObjectNamespace<InspectableRateLimiter>;
 }
 
-const worker = {
+export default {
   async fetch(request: Request, env: TestEnv): Promise<Response> {
     const url = new URL(request.url);
-    if (url.pathname === "/api/chat") return POST(request);
-    if (url.pathname === "/test/missing-ip") {
-      const headers = new Headers(request.headers);
-      headers.delete("CF-Connecting-IP");
-      return POST(new Request(request, { headers }));
-    }
+    if (!url.pathname.startsWith("/test/")) return worker.fetch(request, env);
+
     const limiter = env.TEST_LIMITER.getByName(
       url.searchParams.get("key") ?? "test",
     );
@@ -62,5 +58,3 @@ const worker = {
     }
   },
 };
-
-export default worker;

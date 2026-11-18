@@ -10,19 +10,30 @@ npm run check
 
 Runs formatting, TypeScript, ESLint, tests, and production build in order. Individual commands are in the [development guide](development.md#commands).
 
-| File                            | Coverage                                                                                                                                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tests/funding-chat.test.mjs`   | Transcript bounds, context construction, source validation, URL rules.                                                                                                                     |
-| `tests/search-history.test.mjs` | Storage validation, retention, caps, quota eviction, titles, transcript export.                                                                                                            |
-| `tests/chat-api.test.mjs`       | Real chat route and SQLite-backed Durable Objects in Miniflare: concurrency/limits, restart persistence, identity/origin/body checks, cookies, context, upstream failures, auth rejection. |
+| File                            | Coverage                                                                                                                                                                                             |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/funding-chat.test.mjs`   | Transcript bounds, context construction, source validation, URL rules.                                                                                                                               |
+| `tests/search-history.test.mjs` | Storage validation, retention, caps, quota eviction, titles, transcript export.                                                                                                                      |
+| `tests/chat-api.test.mjs`       | The real Worker and SQLite-backed Durable Objects in Miniflare: token verification, CORS, per-user limits and concurrency, restart persistence, body checks, conversation tokens, upstream failures. |
 
-Workers tests bundle the actual route with Vinext's `NextResponse` shim, substitute `tests/fixtures/auth.ts` for Neon, and intercept Maizey with fictional responses. Runs use isolated temporary storage and remove it afterward. No real Maizey token, Google sign-in, or paid Maizey requests are needed. These tests do not verify the real provider, deployed cookies, or account settings.
+The Worker tests bundle `worker/index.ts` through `tests/fixtures/chat-worker.ts`, sign test tokens with a throwaway key whose public half is served by a mocked Neon JWKS endpoint, and intercept Maizey with fictional responses. Runs use isolated temporary storage and remove it afterward. No real Maizey token, Google sign-in, or paid Maizey requests are needed. These tests do not verify the real provider, third-party cookie behavior, or account settings.
+
+## Smoke test the Worker
+
+With `npm run worker:dev` running:
+
+```sh
+curl http://localhost:8787/api/health
+curl -i -X POST http://localhost:8787/api/chat -H "Content-Type: application/json" -d "{}"
+```
+
+The first returns `{"ok":true}`; the second returns 401 without calling Maizey.
 
 ## Browser checks
 
-Use public or fictional input. Real chat tests may consume Maizey quota. Run against the release origin, using a separate profile for clean-session checks.
+Use public or fictional input. Real chat tests may consume Maizey quota. Run against the release origin (the Pages URL), using a separate profile for clean-session checks. Also try Safari or a browser with third-party cookies blocked: the site and Neon Auth are different origins.
 
-- [ ] Signed-out `/` leads to sign-in; direct unsigned `/api/chat` returns 401 without upstream calls.
+- [ ] Signed-out `/` shows the sign-in screen; direct unsigned `/api/chat` returns 401 without upstream calls.
 - [ ] Google returns to the app. Cancellation/browser Back leaves an enabled sign-in button and usable retry behavior.
 - [ ] Sign-out returns to sign-in; an older open tab cannot spend quota after session revocation.
 - [ ] Recovery: save one answer in tab A, sign out in tab B, then ask a follow-up in A. Choose **Sign in again**, complete Google, and confirm the saved transcript and exact unsent draft return.
@@ -34,7 +45,7 @@ Use public or fictional input. Real chat tests may consume Maizey quota. Run aga
 - [ ] Skip link, composer, source links, privacy notice, retry, history, and sign-out work by keyboard with visible focus.
 - [ ] Rate-limit cooldown restores the draft, blocks sending, and survives New search. Prefer mocked/local checks instead of exhausting live paid calls.
 
-Earlier local browser QA verified Google sign-in/out, a fictional answer, guide toggling, mobile layouts/drawer, and two-tab recovery. That evidence applies to the local code at that time, not the old public test deployment. Browser QA was not repeated during this cleanup.
+Browser QA has not been performed on the Pages + Worker architecture. Earlier QA applied to the previous single-origin version.
 
 ## Prompts for different schools
 
